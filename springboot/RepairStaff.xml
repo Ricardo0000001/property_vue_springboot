@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eworldlink.api.property.mapper.RepairStaffMapper">
+<!--    <resultMap id="repairRecrodEntity" type="com.eworldlink.api.property.entity.RepairRecordEntity">-->
+<!--    </resultMap>-->
+
+    <select id="getLoginCodeAndTime" parameterType="java.util.Map" resultType="java.util.Map">
+        select m.createtime, n.code from
+(select  max(a.createtime) as createtime from e_worldlink.tab_sms_code a   where mobile = #{mobile} ) m
+left join(select code, mobile, createtime from e_worldlink.tab_sms_code) n on m.createtime = n.createtime
+    </select>
+
+    <select id="getWorkOutline" parameterType="java.util.Map" resultType="java.util.Map">
+        select a.id, a.apptime, a.name, a.park, a.staffname from property.v_repair_staff a
+        where 1=1
+        <if test="mobile != null and mobile != ''">
+            AND mobile = #{mobile}
+        </if>
+
+        <if test="time != null and time != ''">
+            AND time = #{apptime, jdbcType=DATE}
+        </if>
+    </select>
+
+    <select id="getWorkDetail" parameterType="java.util.Map" resultType="com.eworldlink.api.property.entity.RepairRecordEntity">
+        select * from property.v_repair_staff where id = #{id}
+    </select>
+</mapper>
